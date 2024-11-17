@@ -6,8 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "general_settings_tab",
-  "whitelabel_setting_section",
-  "ignore_onboard_whitelabel",
+  "ksa_zatca_setting_section",
+  "ignore_onboard_ksa_zatca",
   "column_break_3",
   "show_help_menu",
   "column_break_5",
@@ -22,7 +22,7 @@
   "navbar_settings_tab",
   "navbar_setting_section",
   "navbar_background_color",
-  "whitelabel_app_name",
+  "ksa_zatca_app_name",
   "column_break_7",
   "custom_navbar_title",
   "custom_navbar_title_style",
@@ -78,15 +78,15 @@
    "label": "Navbar Title Style"
   },
   {
-   "fieldname": "whitelabel_setting_section",
+   "fieldname": "ksa_zatca_setting_section",
    "fieldtype": "Section Break",
-   "label": "Whitelabel Setting"
+   "label": "ksa_zatca Setting"
   },
   {
    "default": "0",
-   "fieldname": "ignore_onboard_whitelabel",
+   "fieldname": "ignore_onboard_ksa_zatca",
    "fieldtype": "Check",
-   "label": "Ignore Onboard Whitelabel"
+   "label": "Ignore Onboard ksa_zatca"
   },
   {
    "fieldname": "column_break_3",
@@ -109,9 +109,9 @@
    "label": "Disable System Update Notification"
   },
   {
-   "fieldname": "whitelabel_app_name",
+   "fieldname": "ksa_zatca_app_name",
    "fieldtype": "Data",
-   "label": "Whitelabel App Name"
+   "label": "ksa_zatca App Name"
   },
   {
    "description": "Upload the logo as public so it can accessible at login page ",
@@ -171,8 +171,8 @@
  "links": [],
  "modified": "2024-02-10 00:14:31.810695",
  "modified_by": "Administrator",
- "module": "Whitelabel",
- "name": "Whitelabel Setting",
+ "module": "ksa_zatca",
+ "name": "ksa_zatca Setting",
  "owner": "Administrator",
  "permissions": [
   {
