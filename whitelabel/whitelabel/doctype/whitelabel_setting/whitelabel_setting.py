@@ -7,7 +7,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.installer import update_site_config
 
-class WhitelabelSetting(Document):
+class ksa_zatcaSetting(Document):
 	def validate(self):
 		system_settings_doc = frappe.get_doc("System Settings","System Settings")
 		navbar_settings_doc = frappe.get_doc("Navbar Settings","Navbar Settings")
@@ -22,8 +22,8 @@ class WhitelabelSetting(Document):
 		website_doc.save(ignore_permissions = True)
 
 	def set_app_name(self,system_settings_doc):	
-		if self.whitelabel_app_name:
-			system_settings_doc.app_name = self.whitelabel_app_name
+		if self.ksa_zatca_app_name:
+			system_settings_doc.app_name = self.ksa_zatca_app_name
 		else:
 			if "erpnext" in frappe.get_installed_apps():
 				system_settings_doc.app_name = "ERPNext"
@@ -45,7 +45,7 @@ class WhitelabelSetting(Document):
 			frappe.clear_cache()
 	
 	def disable_onboarding(self,system_settings_doc):
-		if self.ignore_onboard_whitelabel == 1:
+		if self.ignore_onboard_ksa_zatca == 1:
 			system_settings_doc.enable_onboarding = 0
 		else:
 			system_settings_doc.enable_onboarding = 1
