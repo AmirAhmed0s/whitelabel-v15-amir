@@ -6,5 +6,5 @@ from __future__ import unicode_literals
 # import frappe
 import unittest
 
-class TestWhitelabelSetting(unittest.TestCase):
+class Testksa_zatcaSetting(unittest.TestCase):
 	pass
