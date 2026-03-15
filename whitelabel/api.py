@@ -52,6 +52,21 @@ def boot_session(bootinfo):
 			except Exception:
 				pass
 
+		# Expose allowed employees for UI employee-field filtering on managed doctypes
+		try:
+			from whitelabel.whitelabel.manager_permission import (
+				_user_bypasses,
+				_get_manager_doc,
+				get_allowed_employees,
+			)
+			user = frappe.session['user']
+			if not _user_bypasses(user):
+				mgr_doc = _get_manager_doc(user)
+				if mgr_doc:
+					bootinfo.manager_allowed_employees = get_allowed_employees(user)
+		except Exception:
+			pass
+
 
 @frappe.whitelist()
 def get_whitelabel_settings():

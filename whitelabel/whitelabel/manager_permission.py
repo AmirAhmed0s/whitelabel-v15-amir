@@ -152,7 +152,7 @@ def has_permission(doc, ptype="read", user=None):
 
 	# Enforce read-only vs edit-access
 	doctype_cfg = allowed_doctypes[doc_type]
-	write_operations = {"write", "submit", "cancel", "amend", "delete"}
+	write_operations = {"create", "write", "submit", "cancel", "amend", "delete"}
 	if ptype in write_operations:
 		if not doctype_cfg.get("edit_access"):
 			frappe.throw(
@@ -162,3 +162,54 @@ def has_permission(doc, ptype="read", user=None):
 			return False
 
 	return True
+
+
+# ---------------------------------------------------------------------------
+# Whitelisted API helpers
+# ---------------------------------------------------------------------------
+
+@frappe.whitelist()
+def get_allowed_employees_for_current_user():
+	"""Whitelisted API: return allowed employee IDs for the current session user.
+
+	Returns:
+	  None – user has no manager restrictions (privileged role or no manager doc).
+	  list – employee IDs the manager may access (may be empty).
+	"""
+	user = frappe.session.user
+	if _user_bypasses(user):
+		return None
+	mgr_doc = _get_manager_doc(user)
+	if not mgr_doc:
+		return None
+	return get_allowed_employees(user)
+
+
+def validate_employee_creation(doc, method=None):
+	"""doc_events hook: validate
+
+	Ensures the employee on a new or updated document belongs to the manager's
+	allowed list.  Applies on both creation and edit.
+	Privileged users and non-managers are not restricted.
+	"""
+	user = frappe.session.user
+
+	# Privileged roles are never restricted
+	if _user_bypasses(user):
+		return
+
+	# No Manager Permissions record → defer to standard Frappe permissions
+	mgr_doc = _get_manager_doc(user)
+	if not mgr_doc:
+		return
+
+	doc_employee = doc.get(EMPLOYEE_FIELD)
+	if not doc_employee:
+		return
+
+	allowed_employees = get_allowed_employees(user)
+	if doc_employee not in allowed_employees:
+		frappe.throw(
+			_("You are not allowed to create records for this employee."),
+			frappe.PermissionError,
+		)
