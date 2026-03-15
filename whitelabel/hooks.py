@@ -75,14 +75,27 @@ after_migrate = ['ksa_zatca.api.ksa_zatca_patch']
 # Permissions
 # -----------
 # Permissions evaluated in scripted ways
-
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
 #
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+# Manager Permissions: restrict manager users to their assigned employees and
+# DocTypes as configured in the "Manager Permissions" DocType.
+
+_MANAGER_PERM_MODULE = "whitelabel.whitelabel.manager_permission"
+
+permission_query_conditions = {
+	"Leave Application":    _MANAGER_PERM_MODULE + ".get_permission_query_conditions",
+	"Loan Application":     _MANAGER_PERM_MODULE + ".get_permission_query_conditions",
+	"Clearance Form":       _MANAGER_PERM_MODULE + ".get_permission_query_conditions",
+	"Visit Form":           _MANAGER_PERM_MODULE + ".get_permission_query_conditions",
+	"Permission Application": _MANAGER_PERM_MODULE + ".get_permission_query_conditions",
+}
+
+has_permission = {
+	"Leave Application":    _MANAGER_PERM_MODULE + ".has_permission",
+	"Loan Application":     _MANAGER_PERM_MODULE + ".has_permission",
+	"Clearance Form":       _MANAGER_PERM_MODULE + ".has_permission",
+	"Visit Form":           _MANAGER_PERM_MODULE + ".has_permission",
+	"Permission Application": _MANAGER_PERM_MODULE + ".has_permission",
+}
 
 # Document Events
 # ---------------
