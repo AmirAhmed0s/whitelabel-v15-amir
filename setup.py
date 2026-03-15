@@ -4,15 +4,15 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
 	install_requires = f.read().strip().split('\n')
 
-# get version from __version__ variable in ksa_zatca/__init__.py
-from ksa_zatca import __version__ as version
+# get version from __version__ variable in whitelabel/__init__.py
+from whitelabel import __version__ as version
 
 setup(
-	name='ksa_zatca',
+	name='whitelabel',
 	version=version,
-	description='ERPNext ksa_zatca',
-	author='Bhavesh Maheshwari',
-	author_email='maheshwaribhavesh95863@gmail.com',
+	description='Whitelabel app for Frappe/ERPNext v15',
+	author='Amir Ahmed',
+	author_email='',
 	packages=find_packages(),
 	zip_safe=False,
 	include_package_data=True,
