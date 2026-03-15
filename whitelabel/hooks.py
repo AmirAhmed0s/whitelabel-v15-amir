@@ -90,6 +90,17 @@ has_permission = {
 	"Permission Application": _MANAGER_PERM_MODULE + ".has_permission",
 }
 
+# Validate that the employee on a document belongs to the manager's allowed list
+_VALIDATE_FN = _MANAGER_PERM_MODULE + ".validate_employee_creation"
+
+doc_events = {
+	"Leave Application":      {"validate": _VALIDATE_FN},
+	"Loan Application":       {"validate": _VALIDATE_FN},
+	"Clearance Form":         {"validate": _VALIDATE_FN},
+	"Visit Form":             {"validate": _VALIDATE_FN},
+	"Permission Application": {"validate": _VALIDATE_FN},
+}
+
 # Document Events
 # ---------------
 # Hook on document methods and events
