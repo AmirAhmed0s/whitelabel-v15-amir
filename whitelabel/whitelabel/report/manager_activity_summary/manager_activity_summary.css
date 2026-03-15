@@ -1,0 +1,82 @@
+/* Manager Activity Summary – Custom Report Styles
+ * ------------------------------------------------
+ * Provides: sticky header, alternating rows, employee badges,
+ * and color-coded count badges (gray / blue / green).
+ */
+
+/* ── Sticky header ─────────────────────────────────────────────────── */
+.report-wrapper .datatable .dt-head {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: var(--fg-color, #ffffff);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Alternating row background ────────────────────────────────────── */
+.report-wrapper .datatable .dt-row:nth-child(even) .dt-cell {
+	background-color: var(--subtle-fg, #f8f9fa);
+}
+
+/* ── Employee ID badge ─────────────────────────────────────────────── */
+.mas-employee-badge {
+	display: inline-block;
+	padding: 2px 10px;
+	background: #e8f4fd;
+	color: #1a6db5;
+	border-radius: 12px;
+	font-size: 0.82em;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+}
+
+/* ── Employee name cell ────────────────────────────────────────────── */
+.mas-employee-cell {
+	font-weight: 500;
+	color: #2d3748;
+}
+
+/* ── Shared count badge base ───────────────────────────────────────── */
+.mas-count-badge {
+	display: inline-block;
+	min-width: 34px;
+	padding: 2px 10px;
+	border-radius: 12px;
+	text-align: center;
+	font-weight: 600;
+	font-size: 0.88em;
+	text-decoration: none;
+	cursor: pointer;
+	transition: opacity 0.15s ease;
+}
+
+.mas-count-badge:hover {
+	opacity: 0.8;
+	text-decoration: none;
+}
+
+/* 0 – light gray */
+.mas-count-zero {
+	background: #e9ecef;
+	color: #6c757d;
+}
+
+/* 1–3 – blue */
+.mas-count-low {
+	background: #cce5ff;
+	color: #004085;
+}
+
+/* 4+ – green */
+.mas-count-high {
+	background: #d4edda;
+	color: #155724;
+}
+
+/* ── Center-align all non-employee columns ─────────────────────────── */
+.report-wrapper .datatable .dt-cell:not(:first-child):not(:nth-child(2)) .dt-cell--content,
+.report-wrapper .datatable .dt-cell:not(:first-child):not(:nth-child(2)) {
+	text-align: center;
+	justify-content: center;
+}

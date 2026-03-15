@@ -12,6 +12,12 @@ import frappe
 from frappe import _
 from frappe.utils import getdate, nowdate
 
+# Priority order for the date field used when filtering transactions
+DATE_FIELD_PRIORITY = ("posting_date", "transaction_date", "date")
+
+# Complete set of field names that may ever be used in SQL; used for whitelist validation
+_SAFE_DATE_FIELDS = frozenset(DATE_FIELD_PRIORITY) | {"creation"}
+
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
@@ -102,8 +108,23 @@ def get_manager_config(manager):
 	return {"employees": employees, "doctypes": doctypes}
 
 
+def get_date_field(doctype):
+	"""
+	Determine the best date field to use for filtering transactions.
+	Priority: posting_date → transaction_date → date → creation (fallback).
+	The returned value is always a member of _SAFE_DATE_FIELDS.
+	"""
+	if not frappe.db.table_exists("tab" + doctype):
+		return "creation"
+	meta = frappe.get_meta(doctype)
+	for candidate in DATE_FIELD_PRIORITY:
+		if meta.has_field(candidate):
+			return candidate
+	return "creation"
+
+
 def build_columns(doctypes):
-	"""Build report column definitions."""
+	"""Build report column definitions, including detected date_field per DocType."""
 	columns = [
 		{
 			"fieldname": "employee",
@@ -126,6 +147,8 @@ def build_columns(doctypes):
 				"label": _(dt),
 				"fieldtype": "Int",
 				"width": 160,
+				# Passed to JS so the formatter can build correct list-view URLs
+				"date_field": get_date_field(dt),
 			}
 		)
 	return columns
@@ -139,9 +162,9 @@ def build_data(employees, doctypes, filters):
 	from_date = filters.get("from_date")
 	to_date   = filters.get("to_date") or nowdate()
 
-	# Fetch all counts in one query per doctype then pivot in Python
+	# Fetch all counts in one query per doctype then pivot in Python.
 	# This avoids N×M queries.
-	counts = {}  # {employee: {doctype: count}}
+	counts = {}  # {employee: {fieldname: count}}
 	for emp in employees:
 		counts[emp] = {frappe.scrub(dt): 0 for dt in doctypes}
 
@@ -174,31 +197,45 @@ def build_data(employees, doctypes, filters):
 def get_doctype_counts(doctype, employees, from_date=None, to_date=None):
 	"""
 	Return {employee: count} for *doctype* within the given date range.
-	Uses a single aggregated SQL query for performance.
+	Uses a single aggregated SQL query per DocType for performance.
+
+	Filtering rules:
+	  - Only submitted / saved records (docstatus != 2, i.e. not cancelled).
+	  - Date range applied on the best available date field (see get_date_field).
 	"""
 	if not frappe.db.table_exists("tab" + doctype):
 		return {}
 
-	# Check if the doctype has a 'employee' field (creation is always present in Frappe)
 	meta = frappe.get_meta(doctype)
-	has_employee = meta.has_field("employee")
-
-	if not has_employee:
+	if not meta.has_field("employee"):
 		return {}
 
-	conditions = []
+	date_field = get_date_field(doctype)
+
+	# Safety: date_field must come from the known safe set (no user input reaches here,
+	# but this guards against any future code path changes).
+	if date_field not in _SAFE_DATE_FIELDS:
+		date_field = "creation"
+
+	# Always exclude cancelled records
+	conditions = ["`docstatus` != 2"]
 	values = {"employees": employees}
 
 	if from_date:
-		conditions.append("DATE(`creation`) >= %(from_date)s")
+		if date_field == "creation":
+			conditions.append("DATE(`creation`) >= %(from_date)s")
+		else:
+			conditions.append("`{0}` >= %(from_date)s".format(date_field))
 		values["from_date"] = from_date
+
 	if to_date:
-		conditions.append("DATE(`creation`) <= %(to_date)s")
+		if date_field == "creation":
+			conditions.append("DATE(`creation`) <= %(to_date)s")
+		else:
+			conditions.append("`{0}` <= %(to_date)s".format(date_field))
 		values["to_date"] = to_date
 
-	where_clause = ""
-	if conditions:
-		where_clause = "AND " + " AND ".join(conditions)
+	where_clause = "AND " + " AND ".join(conditions)
 
 	sql = """
 		SELECT
