@@ -1,0 +1,16 @@
+[project]
+name = "whitelabel"
+version = "0.0.1"
+description = "Whitelabel app for Frappe/ERPNext v15 — custom branding, logo, navbar and manager-permission controls"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Amir Ahmed" }]
+requires-python = ">=3.10"
+dependencies = ["frappe"]
+
+[build-system]
+requires = ["flit_core>=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "whitelabel"

@@ -2,10 +2,10 @@
 Configuration for docs
 """
 
-# source_link = "https://github.com/[org_name]/ksa_zatca"
-# docs_base_url = "https://[org_name].github.io/ksa_zatca"
-# headline = "App that does everything"
-# sub_heading = "Yes, you got that right the first time, everything"
+# source_link = "https://github.com/AmirAhmed0s/whitelabel-v15-amir"
+# docs_base_url = "https://AmirAhmed0s.github.io/whitelabel-v15-amir"
+# headline = "Whitelabel app for Frappe/ERPNext v15"
+# sub_heading = "Custom branding, logo, navbar and manager-permission controls"
 
 def get_context(context):
-	context.brand_html = "ksa_zatca"
+	context.brand_html = "Whitelabel"

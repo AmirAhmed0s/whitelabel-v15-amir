@@ -5,10 +5,10 @@ from frappe import _
 def get_data():
 	return [
 		{
-			"module_name": "ksa_zatca",
-			"color": "grey",
-			"icon": "octicon octicon-file-directory",
+			"module_name": "Whitelabel",
+			"color": "blue",
+			"icon": "octicon octicon-paintcan",
 			"type": "module",
-			"label": _("ksa_zatca")
+			"label": _("Whitelabel")
 		}
 	]

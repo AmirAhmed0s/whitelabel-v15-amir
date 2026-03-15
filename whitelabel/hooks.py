@@ -1,38 +1,33 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from . import __version__ as app_version
-from . import __logo__ as app_logo
 
-
-app_name = "ksa_zatca"
-app_title = "ksa_zatca"
-app_publisher = "Bhavesh Maheshwari"
-app_description = "ERPNext ksa_zatca"
-app_icon = "octicon octicon-file-directory"
-app_color = "grey"
-app_email = "maheshwaribhavesh95863@gmail.com"
+app_name = "whitelabel"
+app_title = "Whitelabel"
+app_publisher = "Amir Ahmed"
+app_description = "Whitelabel app for Frappe/ERPNext v15 — custom branding, logo, navbar and manager-permission controls"
+app_icon = "octicon octicon-paintcan"
+app_color = "blue"
+app_email = ""
 app_license = "MIT"
-app_logo_url = '/assets/ksa_zatca/images/ksa_zatca_logo.jpg'
+app_logo_url = '/assets/whitelabel/images/whitelabel_logo.jpg'
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "/assets/ksa_zatca/css/ksa_zatca_app.css"
-app_include_js = "/assets/ksa_zatca/js/ksa_zatca.js"
+app_include_css = "/assets/whitelabel/css/whitelabel_app.css"
+app_include_js = "/assets/whitelabel/js/whitelabel.js"
 
 # include js, css files in header of web template
-web_include_css = "/assets/ksa_zatca/css/ksa_zatca_web.css"
-# web_include_js = "/assets/ksa_zatca/js/ksa_zatca.js"
+web_include_css = "/assets/whitelabel/css/whitelabel_web.css"
+# web_include_js = "/assets/whitelabel/js/whitelabel.js"
 
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
 # Home Pages
 # ----------
@@ -45,14 +40,12 @@ web_include_css = "/assets/ksa_zatca/css/ksa_zatca_web.css"
 #	"Role": "home_page"
 # }
 
-# Website user home page (by function)
-# get_website_user_home_page = "ksa_zatca.utils.get_home_page"
-
 website_context = {
-	"favicon": app_logo or "/assets/ksa_zatca/images/ksa_zatca_logo.jpg",
-	"splash_image": app_logo or "/assets/ksa_zatca/images/ksa_zatca_logo.jpg"
+	"favicon": "/assets/whitelabel/images/whitelabel_logo.jpg",
+	"splash_image": "/assets/whitelabel/images/whitelabel_logo.jpg"
 }
-after_migrate = ['ksa_zatca.api.ksa_zatca_patch']
+
+after_migrate = ['whitelabel.api.whitelabel_patch']
 
 # Generators
 # ----------
@@ -63,14 +56,14 @@ after_migrate = ['ksa_zatca.api.ksa_zatca_patch']
 # Installation
 # ------------
 
-# before_install = "ksa_zatca.install.before_install"
-# after_install = "ksa_zatca.install.after_install"
+# before_install = "whitelabel.install.before_install"
+# after_install = "whitelabel.install.after_install"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "ksa_zatca.notifications.get_notification_config"
+# notification_config = "whitelabel.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -114,27 +107,28 @@ has_permission = {
 
 # scheduler_events = {
 # 	"all": [
-# 		"ksa_zatca.tasks.all"
+# 		"whitelabel.tasks.all"
 # 	],
 # 	"daily": [
-# 		"ksa_zatca.tasks.daily"
+# 		"whitelabel.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"ksa_zatca.tasks.hourly"
+# 		"whitelabel.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"ksa_zatca.tasks.weekly"
+# 		"whitelabel.tasks.weekly"
 # 	]
 # 	"monthly": [
-# 		"ksa_zatca.tasks.monthly"
+# 		"whitelabel.tasks.monthly"
 # 	]
 # }
 
-boot_session = "ksa_zatca.api.boot_session"
+boot_session = "whitelabel.api.boot_session"
+
 # Testing
 # -------
 
-# before_tests = "ksa_zatca.install.before_tests"
+# before_tests = "whitelabel.install.before_tests"
 
 fixtures = [
     {"dt": "Custom Field", "filters": [["Translation","source_text","like","%ERPNext%"]]}
@@ -142,19 +136,12 @@ fixtures = [
 
 # Overriding Methods
 # ------------------------------
-#
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "ksa_zatca.event.get_events"
-# }
-#
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "ksa_zatca.task.get_dashboard_data"
-# }
 
 # override_whitelisted_methods = {
-# 	"frappe.utils.change_log.show_update_popup": "ksa_zatca.api.ignore_update_popup"
+# 	"frappe.desk.doctype.event.event.get_events": "whitelabel.event.get_events"
+# }
+
+# override_doctype_dashboards = {
+# 	"Task": "whitelabel.task.get_dashboard_data"
 # }
 
