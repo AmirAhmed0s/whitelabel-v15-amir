@@ -8,7 +8,7 @@ frappe.query_reports["Manager Activity Summary"] = {
 			label: __("Manager"),
 			fieldtype: "Link",
 			options: "User",
-			reqd: 0,
+			reqd: 1,
 			default: frappe.session.user,
 		},
 		{
@@ -32,32 +32,71 @@ frappe.query_reports["Manager Activity Summary"] = {
 		},
 	],
 
+	onload: function (report) {
+		// Delegated click handler for count-badge links.
+		// Reads routing data from data-* attributes to avoid inline script injection.
+		report.wrapper.on("click", ".mas-count-link", function (e) {
+			e.preventDefault();
+			const $el = $(this);
+			const doctype    = $el.data("doctype");
+			const employee   = $el.data("employee");
+			const date_field = $el.data("date-field") || "posting_date";
+			const from_date  = $el.data("from-date") || "";
+			const to_date    = $el.data("to-date")   || "";
+			const list_filters = { employee };
+			if (from_date || to_date) {
+				list_filters[date_field] = ["Between", [from_date, to_date]];
+			}
+			frappe.set_route("List", doctype, list_filters);
+		});
+	},
+
 	formatter: function (value, row, column, data, default_formatter) {
-		// Employee column – wrap in a styled badge
+		// Employee ID column – wrap in a styled badge
 		if (column.fieldname === "employee") {
-			return `<span class="employee-badge">${value || ""}</span>`;
+			const safe = frappe.utils.escape_html
+				? frappe.utils.escape_html(value || "")
+				: (value || "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+			return `<span class="mas-employee-badge">${safe}</span>`;
 		}
 
+		// Employee name column
 		if (column.fieldname === "employee_name") {
-			return `<span class="employee-cell">${value || ""}</span>`;
+			const safe = frappe.utils.escape_html
+				? frappe.utils.escape_html(value || "")
+				: (value || "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+			return `<span class="mas-employee-cell">${safe}</span>`;
 		}
 
-		// Numeric count columns – color-code based on value
-		if (typeof value === "number" || (value !== null && value !== undefined && !isNaN(parseInt(value)))) {
+		// Numeric count columns – color-code and make clickable via data-* attributes
+		if (
+			column.fieldtype === "Int" &&
+			column.fieldname !== "employee" &&
+			column.fieldname !== "employee_name"
+		) {
 			const num = parseInt(value) || 0;
-			let cls = "count-zero";
-			if (num >= 4) cls = "count-high";
-			else if (num >= 1) cls = "count-low";
+			let cls = "mas-count-zero";
+			if (num >= 4) cls = "mas-count-high";
+			else if (num >= 1) cls = "mas-count-low";
 
-			const filters = frappe.query_report.get_filter_values();
-			const from_date = filters.from_date || "";
-			const to_date   = filters.to_date   || "";
-			const employee  = data && data.employee ? data.employee : "";
-			const doctype   = column.label;
+			const filters_val = frappe.query_report.get_filter_values();
+			const from_date  = filters_val.from_date || "";
+			const to_date    = filters_val.to_date   || "";
+			const employee   = (data && data.employee) ? data.employee : "";
+			const doctype    = column.label;
+			// date_field is populated by the Python backend in the column definition
+			const date_field = column.date_field || "posting_date";
 
-			// Make count clickable → open the filtered list view
-			const href = `/app/${frappe.router.slug(doctype)}?employee=${encodeURIComponent(employee)}&from_date=${from_date}&to_date=${to_date}`;
-			return `<a href="${href}" class="count-badge ${cls}" title="${__('View {0} records for {1}', [doctype, employee])}">${num}</a>`;
+			// All dynamic data stored in data-* attributes; click handled by delegated listener
+			return (
+				`<a href="#" class="mas-count-badge mas-count-link ${cls}" ` +
+				`data-doctype="${frappe.utils.escape_html ? frappe.utils.escape_html(doctype) : doctype}" ` +
+				`data-employee="${frappe.utils.escape_html ? frappe.utils.escape_html(employee) : employee}" ` +
+				`data-date-field="${date_field}" ` +
+				`data-from-date="${from_date}" ` +
+				`data-to-date="${to_date}" ` +
+				`title="${__("View {0} records for {1}", [doctype, employee])}">${num}</a>`
+			);
 		}
 
 		return default_formatter(value, row, column, data);
